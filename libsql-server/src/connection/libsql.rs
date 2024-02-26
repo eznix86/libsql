@@ -148,7 +148,6 @@ where
         self.make_connection().await
     }
 }
-
 pub struct LibSqlConnection<T> {
     inner: Arc<Mutex<Connection<T>>>,
 }

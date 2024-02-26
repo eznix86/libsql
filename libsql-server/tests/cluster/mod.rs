@@ -88,17 +88,20 @@ fn proxy_write() {
     make_cluster(&mut sim, 1, true);
 
     sim.client("client", async {
-        let db =
-            Database::open_remote_with_connector("http://replica0:8080", "", TurmoilConnector)?;
+        let db = Database::open_remote_with_connector("http://replica0:8080", "", TurmoilConnector)
+            .unwrap();
         let conn = db.connect()?;
 
-        conn.execute("create table test (x)", ()).await?;
-        conn.execute("insert into test values (12)", ()).await?;
+        conn.execute("create table test (x)", ()).await.unwrap();
+        conn.execute("insert into test values (12)", ())
+            .await
+            .unwrap();
 
         // assert that the primary got the write
-        let db = Database::open_remote_with_connector("http://primary:8080", "", TurmoilConnector)?;
-        let conn = db.connect()?;
-        let mut rows = conn.query("select count(*) from test", ()).await?;
+        let db = Database::open_remote_with_connector("http://primary:8080", "", TurmoilConnector)
+            .unwrap();
+        let conn = db.connect().unwrap();
+        let mut rows = conn.query("select count(*) from test", ()).await.unwrap();
 
         assert!(matches!(
             rows.next().await.unwrap().unwrap().get_value(0).unwrap(),

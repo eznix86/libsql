@@ -48,7 +48,7 @@ impl HttpSender {
             .body(hyper::Body::from(body))
             .map_err(|err| HranaError::Http(format!("{:?}", err)))?;
 
-        let resp = self.inner.request(req).await.map_err(HranaError::from)?;
+        let resp = dbg!(self.inner.request(req).await).map_err(HranaError::from)?;
 
         if resp.status() != StatusCode::OK {
             let body = hyper::body::to_bytes(resp.into_body())

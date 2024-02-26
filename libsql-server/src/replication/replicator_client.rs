@@ -101,8 +101,9 @@ impl ReplicatorClient for Client {
         self.session_token.replace(hello.session_token.clone());
 
         if let Some(config) = &hello.config {
+            let config = DatabaseConfig::from(config);
             self.meta_store_handle
-                .store(DatabaseConfig::from(config))
+                .store(config)
                 .await
                 .map_err(|e| Error::Internal(e.into()))?;
 
